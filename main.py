@@ -7,9 +7,12 @@ from pygame import mixer
 # Inicializar Pygame
 pygame.init()
 count = 0
+max_speed = 0
 source = pygame.font.Font("freesansbold.ttf", 32)
 text_x = 10
 text_y = 10
+speed_x = 10
+speed_y = 50
 
 # Añadir musica
 mixer.music.load("archivos/MusicaFondo.mp3")
@@ -31,12 +34,6 @@ def endgame():
 def show_count(x, y):
     text = source.render(f"Score: {count}", True, (255,255,255))
     screen.blit(text, (x,y))
-    '''max = 0
-    for e in enemy_speed:
-        if e > max:
-            max = e
-
-    screen.blit(max, (x, y - 50))'''
 
 
 # Crear fondo
@@ -86,6 +83,10 @@ def player(x, y):
 def enemy(x, y, ene):
     screen.blit(img_enemy[ene], (x, y))
 
+def speed(x, y, max):
+    max = max * 100
+    text = source.render(f"Speed: {int(max)}", True, (255, 255, 255))
+    screen.blit(text, (x, y))
 
 def bullet(x, y):
     global bullet_visible
@@ -157,11 +158,14 @@ while executing:
             bullet_visible = False
             count += 1
             enemy_x[e] = random.randint(0, 736)
-            enemy_y[e] = random.randint(50,200)
-            enemy_speed[e] = enemy_speed[e] + 0.01
+            enemy_y[e] = random.randint(50, 200)
+            enemy_speed[e] = enemy_speed[e] + 0.02
+
+            for i in enemy_speed:
+                if i > max_speed:
+                    max_speed = i
 
         enemy(enemy_x[e], enemy_y[e], e)
-
 
     # Movimiento de la bala
     if bullet_y <= 0:
@@ -174,4 +178,5 @@ while executing:
 
     player(player_x, player_y)
     show_count(text_x, text_y)
+    speed(speed_x, speed_y, max_speed)
     pygame.display.update()
